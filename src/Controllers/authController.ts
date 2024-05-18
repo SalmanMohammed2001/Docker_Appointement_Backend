@@ -1,7 +1,20 @@
 import UserSchema from "../models/UserSchema";
 import DoctorSchema from "../models/DoctorSchema";
+import userSchema from "../models/UserSchema";
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
+
+
+
+
+
+const generateToken=(user:any)=>{
+    return jwt.sign({id:user._id,role:user.role,email:user.email},process.env.JWT_SERCET_KEY,{
+        expiresIn:"15d",
+    })
+}
+
+
 export const register =  async (req:any, res:any) => {
     try {
 
@@ -58,4 +71,41 @@ export const register =  async (req:any, res:any) => {
 
 export const login = async  (req:any, res: any) => {
 
+    try{
+        // @ts-ignore
+       // const {email,password}=req.body
+
+        let user=null;
+
+        const patient= await  userSchema.findOne({email:req.body.email});
+        const doctor= await  DoctorSchema.findOne({email:req.body.email});
+
+        if(patient){
+            user=patient;
+        }else if(doctor){
+            user=doctor;
+        }
+
+        if(!user){
+            res.status(400).json({message:"User not found"})
+        }
+
+        const isPassword=await bcrypt.compare(req.body.password, user?.password);
+        if(!isPassword){
+            res.status(401).json({message:"invalid  credentials"})
+        }
+
+        const  token=generateToken(user)
+
+        // @ts-ignore
+
+        const {password,role,appointments,...rest}=user._doc
+
+        res.setHeader("Authorization",`Bearer ${token}`)
+        res.status(200).json({status:true,message:"Successful login",token,data:rest,role})
+
+    }catch(err){
+        res.status(500).json({success:false,message:"Internal server error"})
+
+    }
 }
