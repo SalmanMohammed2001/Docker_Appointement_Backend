@@ -3,7 +3,6 @@ import express from 'express'
 import  process from "process";
 import bodyParser from "body-parser";
 
-
 var cookieParser = require('cookie-parser')
 const cors = require('cors')
 
@@ -25,3 +24,9 @@ mongoose.connect('mongodb://127.0.0.1:27018/doctor_appointment').then(()=>{
 
     })
 })
+
+const authRoute=require('./routes/auth')
+
+/*==============================*/
+app.use("/api/v1/auth",authRoute)
+/*==============================*/
