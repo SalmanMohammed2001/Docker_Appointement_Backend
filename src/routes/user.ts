@@ -1,12 +1,12 @@
 import express from "express";
 import {updateUser,deleteUser,getAllUser,getSingleUser} from "../Controllers/userController";
-import {verifyToken} from '../middleware/verifyToken'
+import {restrict, verifyToken} from '../middleware/verifyToken'
 
 const router = express.Router();
 
-router.get("/find/:id",verifyToken,getSingleUser)
-router.get("/findAll",verifyToken,getAllUser)
-router.put("/update/:id",verifyToken,updateUser)
-router.delete("/delete/:id",verifyToken,deleteUser)
+router.get("/find/:id",verifyToken,restrict(["patient"]),getSingleUser)
+router.get("/findAll",verifyToken,restrict(["admin"]),getAllUser)
+router.put("/update/:id",verifyToken,restrict(["patient"]),updateUser)
+router.delete("/delete/:id",verifyToken,restrict(["patient"]),deleteUser)
 
 module.exports=router
