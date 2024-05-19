@@ -43,7 +43,7 @@ export const getSingleDoctor = async (req: any, res: any) => {
     const id = req.params.id;
 
     try {
-        const doctor = await DoctorSchema.findById(id).select("-password");
+        const doctor = await DoctorSchema.findById(id).populate("reviews").select("-password");
 
         res.status(200).json({success: true, message: "User details", data: doctor});
     } catch (err) {
