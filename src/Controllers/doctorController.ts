@@ -55,8 +55,26 @@ export const getSingleDoctor = async (req: any, res: any) => {
 export const getAllDoctor = async (req: any, res: any) => {
     const id = req.params.id;
 
+
+
+
     try {
-        const doctors = await DoctorSchema.find({}).select("-password");
+
+        const {query} = req.query;
+
+        let doctors;
+
+        if(query) {
+            doctors = await DoctorSchema.find({
+                isApproved: "approved",
+                $or: [
+                    {name: {$regex: query, $options: " i"}},
+                    {specialization: {$regex: query, $options: " i"}},
+                ]
+            }).select("-password");
+        }else {
+            doctors=await  DoctorSchema.find({isApproved: "approved"}).select("-password");
+        }
 
         res.status(200).json({success: true, message: "User details", data: doctors});
     } catch (err) {
