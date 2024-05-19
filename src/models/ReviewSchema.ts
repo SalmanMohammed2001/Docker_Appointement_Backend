@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 
 
-const reviewSchema = new mongoose.Schema(
+const ReviewSchema = new mongoose.Schema(
     {
         doctor: {
             type: mongoose.Types.ObjectId,
@@ -26,3 +26,4 @@ const reviewSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+export default mongoose.model("Review", ReviewSchema);
