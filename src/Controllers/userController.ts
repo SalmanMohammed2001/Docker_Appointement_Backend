@@ -32,7 +32,7 @@ export const getSingleUser = async (req: any, res: any) => {
     const id = req.params.id;
 
     try {
-        const user = await UserSchema.findById(id);
+        const user = await UserSchema.findById(id).select("-password");
 
         res.status(200).json({success: true, message: "User details", data: user});
     } catch (err) {
@@ -45,7 +45,7 @@ export const getAllUser = async (req: any, res: any) => {
     const id = req.params.id;
 
     try {
-        const users = await UserSchema.find({});
+        const users = await UserSchema.find({}).select("-password");
 
         res.status(200).json({success: true, message: "User details", data: users});
     } catch (err) {

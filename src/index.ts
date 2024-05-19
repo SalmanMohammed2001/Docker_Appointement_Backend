@@ -27,8 +27,10 @@ mongoose.connect('mongodb://127.0.0.1:27018/doctor_appointment').then(()=>{
 
 const authRoute=require('./routes/auth')
 const  userRoute=require('./routes/user');
+const  doctorRoute=require('./routes/doctors');
 
 /*==============================*/
 app.use("/api/v1/auth",authRoute)
 app.use("/api/v1/users",userRoute)
+app.use("/api/v1/doctors",doctorRoute)
 /*==============================*/
