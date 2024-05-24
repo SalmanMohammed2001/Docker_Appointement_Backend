@@ -30,7 +30,7 @@ export const register =  async (req:any, res:any) => {
         }
 
         if(user){
-            res.status(400).json({message:"User Already exist"})
+           return  res.status(400).json({message:"User Already exist"})
         }
 
         const salt=await  bcrypt.genSalt(10);
@@ -64,7 +64,7 @@ export const register =  async (req:any, res:any) => {
 
 
     }catch (error) {
-        res.status(500).json({success:false,message:"Internal server error"})
+       return  res.status(500).json({success:false,message:"Internal server error"})
     }
 
 }
@@ -87,12 +87,12 @@ export const login = async  (req:any, res: any) => {
         }
 
         if(!user){
-            res.status(400).json({message:"User not found"})
+           return  res.status(400).json({message:"User not found"})
         }
 
         const isPassword=await bcrypt.compare(req.body.password, user?.password);
         if(!isPassword){
-            res.status(401).json({message:"invalid  credentials"})
+          return   res.status(401).json({message:"invalid  credentials"})
         }
 
         const  token=generateToken(user)
@@ -102,10 +102,10 @@ export const login = async  (req:any, res: any) => {
         const {password,role,appointments,...rest}=user._doc
 
         res.setHeader("Authorization",`Bearer ${token}`)
-        res.status(200).json({status:true,message:"Successful login",token,data:rest,role})
+        res.status(200).json({status:true,message:"Successful login",token,data:user,role})
 
     }catch(err){
-        res.status(500).json({success:false,message:"Internal server error"})
+      return   res.status(500).json({success:false,message:"Internal server error"})
 
     }
 }
