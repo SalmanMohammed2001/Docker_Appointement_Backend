@@ -1,4 +1,6 @@
 import UserSchema from "../models/UserSchema";
+import BookingSchema from "../models/BookingSchema";
+import DoctorSchema from "../models/DoctorSchema";
 
 
 export const updateUser = async (req: any, res: any) => {
@@ -73,3 +75,26 @@ export  const getUserProfile= async (req:any,res:any)=>{
 
 
 }
+
+export  const  getAllMyAppointments= async (req:any,res:any)=>{
+
+
+    try{
+
+        //step 1 :retrieve   appointment from booking for specific  user
+        const bookings= await   BookingSchema.find({user:req.userId})
+
+        //step 2 : extract doctor id  from appointment booking
+        // @ts-ignore
+        const doctorIds= bookings.map(el=>el.doctor.id)
+
+        //step 3 :retrieve   doctors  using doctor ids
+        const doctor= await  DoctorSchema.find({_id: {$in:doctorIds}}).select('-password');
+
+        return res.status(200).json({success:true,message:"Appointments are getting",data:doctor});
+    }catch (error){
+        return res.status(500).json({success:false,message:"Not Found"})
+    }
+
+}
+
